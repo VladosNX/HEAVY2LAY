@@ -16,8 +16,11 @@ General usage:
 > heavy2lay.py  -h [host] -p [port] -s [sockets] -S [sleeptime]
 #### Explanation
 **host** *(required)*- specifies target host name
+
 **port** *(default is 80 for http and 443 for https)*- specifies target port
+
 **sockets** *(default is 100)*- amount of socket to seng to target at the same time
+
 **sleeptime** *(default is 15)* - sleep time between loops *(in seconds)*
 
 ---
