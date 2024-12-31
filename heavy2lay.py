@@ -12,14 +12,14 @@ import config
 cleanout_lite = '                    \x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D'
 cleanout = cleanout_lite
 
-print = None
 cleanout_lite = ''
-running_platform = platform.system()
-if platform.system() == 'Windows':
+windows = True if platform.system() == 'Windows' else False
+if windows:
     out.p('ATTENTION: You\'re running HEAVY2LAY on Windows. Animations and colors work incorrectly')
     cleanout_lite = '                    '
 else:
     cleanout_lite = '                    \x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D'
+
 cleanout = cleanout_lite
 symbols = [
     '>>>>', ' >>>', '> >>', '>> >', '>>> '
@@ -31,7 +31,7 @@ def animation():
     while True:
         if not animworks:
             break
-        if not running_platform == 'Windows':
+        if not windows:
             out.p(f'\r\x1b[3;31m{symbols[s]}\x1b[0m {animtext}', end='')
         else:
             out.p(f'\r{symbols[s]} {animtext}', end='')
@@ -111,6 +111,14 @@ while True:
             time.sleep(1)
             sleeping += 1
             if sleeping == args['sleeptime']:
+                donetext = ''
+                if refused == 0:
+                    donetext = '\x1b[42mDONE  '
+                elif refused > 0 and not len(alive_sockets) == 0:
+                    donetext = '\x1b[43mDONE  '
+                else:
+                    donetext = '\x1b[41mREFUSE'
+                print(f'\r{donetext}\x1b[0m LOOP #{loop_amount} x{len(alive_sockets)} WORKERS{" / REFUSED x" + str(refused) if refused > 0 else ""}{cleanout}')
                 sleeping = -1
                 alive_sockets = []
     except KeyboardInterrupt:
