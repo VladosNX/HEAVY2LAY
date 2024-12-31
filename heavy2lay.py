@@ -101,6 +101,12 @@ while True:
                         refused += 1
                         # animtext = f'CONNECTION REFUSED ERROR CATCHED ON WORKER {_+1}/{args["sockets"]}'
                         continue
+                    except TimeoutError:
+                        out.error(f'Time out{cleanout}', left='\r')
+                        sock.close()
+                        stop_creating = True
+                        refused += args['sockets'] - len(alive_sockets)
+                        continue
                     except Exception as e:
                         out.error(f'Exception: {e}                         ', left='\r')
                         refused += 1
