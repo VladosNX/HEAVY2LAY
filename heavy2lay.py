@@ -99,7 +99,6 @@ while True:
                     except ConnectionRefusedError:
                         # out.error('Connection Refused')
                         refused += 1
-                        alive_sockets.pop(alive_sockets.index(sock))
                         # animtext = f'CONNECTION REFUSED ERROR CATCHED ON WORKER {_+1}/{args["sockets"]}'
                         continue
                     except Exception as e:
