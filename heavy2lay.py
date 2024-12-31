@@ -107,6 +107,13 @@ while True:
                         stop_creating = True
                         refused += args['sockets'] - len(alive_sockets)
                         continue
+                    except socket.timeout:
+                        out.error(f'Time out{cleanout}', left='\r')
+                        sock.close()
+                        stop_creating = True
+                        refused += args['sockets'] - len(alive_sockets)
+                        continue
+                    
                     except Exception as e:
                         out.error(f'Exception: {e}                         ', left='\r')
                         refused += 1
