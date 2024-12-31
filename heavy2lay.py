@@ -88,11 +88,12 @@ while True:
                             ctx.check_hostname = False
                             ctx.verify_mode = ssl.CERT_NONE
                             sock = ctx.wrap_socket(sock, server_hostname=args['host'])
-                        alive_sockets.append(sock)
                     except OSError as e:
                         out.error(f'OSError catched: {e}{cleanout}', left='\r')
                         sock.close()
                         stop_creating = True
+                        refused += args['sockets'] - len(alive_sockets)
+                        continue
                     try:
                         sock.connect((args['host'], args['port']))
                     except ConnectionRefusedError:
@@ -103,7 +104,9 @@ while True:
                         continue
                     except Exception as e:
                         out.error(f'Exception: {e}                         ', left='\r')
+                        refused += 1
                         continue
+                    alive_sockets.append(sock)
                     sock.send(f'GET / HTTP/1.1'.encode())
             sleeping = 0
         else:
