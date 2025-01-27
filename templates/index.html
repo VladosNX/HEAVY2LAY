@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital@0;1&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+<div class="container">
+    <h1>HEAVY2LAY</h1>
+    <a href="https://github.com/vladosnx/heavy2lay">Project GitHub page</a>
+    <hr>
+    <div class="start-block">
+        <input class="host" placeholder="host">
+        <input class="port" placeholder="port">
+        <input class="sockets" placeholder="sockets">
+        <input class="sleeptime" placeholder="sleeptime"><br><br>
+        <button class="start">start</button>
+    </div>
+
+    <div class="work-block">
+        <h2>Working</h2>
+        <a href="/stop">Stop</a>
+    </div>
+</div>
+</body>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        text-align: center;
+        font-family: "Montserrat", serif;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    .container {
+        width: 50%;
+        margin: 0 auto;
+        background-color: lightgray;
+        padding: 15px;
+        border-radius: 15px;
+    }
+    a {
+        color: black;
+    }
+    input, button {
+        font-family: "Montserrat", serif;
+    }
+    button, input {
+        padding: 10px 25px;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+    }
+
+    @media screen and (max-width: 1000px) {
+        .container {
+            width: 100%;
+            height: 100%;
+        }
+        h1 { font-size: 72px; }
+        a, p { font-size: 28px; }
+        input, button {
+            width: 95%;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+    }
+
+    {% if working == 'n' %}
+    .work-block {
+        display: none;
+    }
+    {% else %}
+    .start-block {
+        display: none;
+    }
+    {% endif %}
+</style>
+<script>
+    let host = document.querySelector('.host');
+    let port = document.querySelector('.port');
+    let sockets = document.querySelector('.sockets');
+    let sleeptime = document.querySelector('.sleeptime');
+    let start = document.querySelector('.start');
+    async function startwork() {
+        // const response = await fetch("http://127.0.0.1:9670/start", {
+        const response = await fetch("/start", {
+            method: "POST",
+            body: JSON.stringify({
+                host: host.value,
+                port: port.value,
+                sockets: sockets.value,
+                sleeptime: sleeptime.value
+            })
+        });
+        location.reload();
+    }
+    start.addEventListener('click', startwork);
+</script>
+</html>

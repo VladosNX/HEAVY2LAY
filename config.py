@@ -1,7 +1,7 @@
 bold = '\x1b[1m'
 reset = '\x1b[0m'
 italic = '\x1b[3m'
-version = '1.0.4.1'
+version = '1.0.5.2'
 
 msg_help = [
     f'HEAVY2LAY v{version}\n\n',
@@ -12,10 +12,13 @@ msg_help = [
     f'-p <port> - specify target port\n',
     f'-s <sockets> - specify sockets amount\n',
     f'-S <sleeptime> - specify sleep time between loops\n',
+    f'-w - opening a web interface\n',
     f'{bold}Explanation:{reset}\n',
     f'{italic}Sockets - amount of requests to be sent at the same time\n',
     f'Sleeptime - specifies how long socket will exist{reset}\n\n',
-    f'{bold}{italic}Developed by VladosNX, see more my programs on https://github.com/vladosnx'
+    f'{bold}{italic}Developed by VladosNX, see more my programs on https://github.com/vladosnx{reset}'
 ]
 
 msg_help = ''.join(msg_help)
+
+msg_http_stop = 'STOPPED BY HTTP INTERFACE'

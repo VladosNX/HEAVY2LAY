@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Opening HEAVY2LAY Web interface...</title>
+</head>
+<body>
+    <h1>Waiting for server open...</h1>
+</body>
+<script>
+    async function tryrequest () {
+        let response = await fetch('http://127.0.0.1:9670');
+        if (response.ok) {
+            location.replace('http://127.0.0.1:9670');
+        }
+    }
+
+    setInterval(tryrequest, 500);
+</script>
+</html>

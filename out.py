@@ -20,7 +20,7 @@ def warn(text, left=''):
     else:
         print(f'{left}[WARN ] {text}')
 def done(text, left=''):
-    if not running_platform == Windows:
+    if not running_platform == 'Windows':
         print(f'{left}\x1b[42mDONE \x1b[0m {text}')
     else:
         print(f'{left}[DONE ] {text}')
