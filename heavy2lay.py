@@ -189,7 +189,10 @@ if args['webinterface']:
         stop = True
         return flask.redirect('/')
     # webbrowser.open('http://127.0.0.1:9670')
-    webbrowser.open(os.path.join(os.getcwd(), 'openweb.html'))
+    if os.getenv('PREFIX').startswith('/data/data/com.termux'):
+        os.system('am start -a android.intent.action.VIEW -d "http://localhost:9670"')
+    else:
+        webbrowser.open(os.path.join(os.getcwd(), 'openweb.html'))
     out.info(f"Web Interface is listening on http://127.0.0.1:9670")
     app.run(host='127.0.0.1', port=9670, debug=False)
     sys.exit(0)
