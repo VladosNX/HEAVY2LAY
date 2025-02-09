@@ -2,70 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital@0;1&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>HEAVY2LAY</title>
 </head>
 <body>
 <div class="container">
     <h1>HEAVY2LAY</h1>
-    <a href="https://github.com/vladosnx/heavy2lay">Project GitHub page</a>
-    <hr>
+    <a href="https://github.com/vladosnx/heavy2lay" class="github-link">Project GitHub page</a>
+    <hr class="divider">
     <div class="start-block">
-        <input class="host" placeholder="host">
-        <input class="port" placeholder="port">
-        <input class="sockets" placeholder="sockets">
-        <input class="sleeptime" placeholder="sleeptime"><br><br>
-        <button class="start">start</button>
+        <input class="host" placeholder="Host">
+        <input class="port" placeholder="Port">
+        <input class="sockets" placeholder="Sockets">
+        <input class="sleeptime" placeholder="Sleep Time"><br><br>
+        <button class="start">Start</button>
     </div>
 
     <div class="work-block">
         <h2>Working</h2>
-        <a href="/stop">Stop</a>
+        <a href="/stop" class="stop-button">Stop</a>
     </div>
 </div>
 </body>
 <style>
     * {
         box-sizing: border-box;
-    }
-    body {
-        text-align: center;
-        font-family: "Montserrat", serif;
-        height: 100%;
-        padding: 0;
         margin: 0;
-    }
-    .container {
-        width: 50%;
-        margin: 0 auto;
-        background-color: lightgray;
-        padding: 15px;
-        border-radius: 15px;
-    }
-    a {
-        color: black;
-    }
-    input, button {
-        font-family: "Montserrat", serif;
-    }
-    button, input {
-        padding: 10px 25px;
-        border-radius: 10px;
-        outline: none;
-        border: none;
+        padding: 0;
     }
 
-    @media screen and (max-width: 1000px) {
-        .container {
-            width: 100%;
-            height: 100%;
+    body {
+        font-family: "Montserrat", sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        /*background: linear-gradient(135deg, #EA0037, #980023);*/
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 30px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #fff;
+    }
+
+    .github-link {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .github-link:hover {
+        color: #ff6f61;
+    }
+
+    .divider {
+        border: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 20px 0;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: background 0.3s ease;
+    }
+
+    input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    input:focus {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 20px;
+        border: none;
+        border-radius: 8px;
+        background: #ff6f61;
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+        background: #ff4a3d;
+        transform: translateY(-2px);
+    }
+
+    .work-block h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .stop-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #ff4a3d;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+    }
+
+    .stop-button:hover {
+        background: #ff2a1a;
+    }
+
+    @media screen and (max-width: 600px) {
+        h1 {
+            font-size: 2rem;
         }
-        h1 { font-size: 72px; }
-        a, p { font-size: 28px; }
+
+        .container {
+            padding: 20px;
+        }
+
         input, button {
-            width: 95%;
-            font-size: 28px;
-            margin-bottom: 30px;
+            font-size: 0.9rem;
         }
     }
 
@@ -86,7 +170,6 @@
     let sleeptime = document.querySelector('.sleeptime');
     let start = document.querySelector('.start');
     async function startwork() {
-        // const response = await fetch("http://127.0.0.1:9670/start", {
         const response = await fetch("/start", {
             method: "POST",
             body: JSON.stringify({
