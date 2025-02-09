@@ -34,8 +34,8 @@
 
     body {
         font-family: "Montserrat", sans-serif;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        /*background: linear-gradient(135deg, #EA0037, #980023);*/
+        {% if working == 'n' %} background: linear-gradient(135deg, #1e3c72, #2a5298);
+        {% else %} background: linear-gradient(135deg, #EA0037, #980023); {% endif %}
         color: white;
         display: flex;
         justify-content: center;
