@@ -1,7 +1,7 @@
 bold = '\x1b[1m'
 reset = '\x1b[0m'
 italic = '\x1b[3m'
-version = '1.1.5'
+version = '1.1.5.1'
 
 msg_help = [
     f'HEAVY2LAY v{version}\n\n',
