@@ -189,7 +189,7 @@ if args['webinterface']:
         stop = True
         return flask.redirect('/')
     # webbrowser.open('http://127.0.0.1:9670')
-    if os.getenv('PREFIX').startswith('/data/data/com.termux'):
+    if os.getenv('PREFIX', '').startswith('/data/data/com.termux'):
         os.system('am start -a android.intent.action.VIEW -d "http://localhost:9670"')
     else:
         webbrowser.open(os.path.join(os.getcwd(), 'openweb.html'))
