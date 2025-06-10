@@ -11,12 +11,16 @@ msg_help = [
     f'-h <host> - specify target host name\n',
     f'-p <port> - specify target port\n',
     f'-s <sockets> - specify sockets amount\n',
+    f'-W <workers> - specify workers amount\n',
     f'-S <sleeptime> - specify sleep time between loops\n',
     f'-w - opening a web interface\n',
+    f'{bold}Long options:{reset}\n'
+    f'--verbose - show more information in logs\n',
+    f'--help    - show this page\n'
     f'{bold}Explanation:{reset}\n',
     f'{italic}Sockets - amount of requests to be sent at the same time\n',
     f'Sleeptime - specifies how long socket will exist{reset}\n\n',
-    f'{bold}{italic}Developed by VladosNX, see more my programs on https://github.com/vladosnx{reset}'
+    f'{bold}{italic}Developed by VladosNX, see more my programs on https://github.com/vladosnx{reset}',
 ]
 
 msg_help = ''.join(msg_help)
