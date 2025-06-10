@@ -19,24 +19,14 @@ class Parser():
         }
     def parse(self):
         current_arg = None
-        # print(self.argv)
         raw_args = self.argv
         raw_args.pop(0)
         argnames = {}
         for i in self.args:
-            # argnames[self.args[i]] = self.args[i]
-            # print(i) # debug
             argnames[self.args[i]['console_arg']] = self.args[i]
         result = {}
         for item in raw_args:
-            # print(f'parsing {item} with c/a {current_arg}') # debug
             if not current_arg == None:
-                # print(f'{current_arg} = {item}') # debug
-                # result[args[current_arg]] = item
-                # for i in self.args:
-                #     if i == current_arg:
-                #         result[i] = current_arg
-                #         break
                 if self.args[current_arg]['xtype'] == T_STRING:
                     result[current_arg] = item
                 elif self.args[current_arg]['xtype'] == T_INT:

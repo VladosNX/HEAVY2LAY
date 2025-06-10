@@ -47,7 +47,7 @@ parser.add_arg('sockets', '-s', xtype=parse.T_INT, default=100)
 parser.add_arg('https', '--https', xtype=parse.T_BOOL)
 parser.add_arg('sleeptime', '-S', xtype=parse.T_INT, default=15)
 parser.add_arg('webinterface', '-w', xtype=parse.T_BOOL, default=False)
-parser.add_arg('workers', '-W', xtype=parse.T_INT, default=5)
+parser.add_arg('workers', '-W', xtype=parse.T_INT, default=1)
 parser.add_arg('verbose', '--verbose', xtype=parse.T_BOOL)
 args = parser.parse()
 
@@ -189,7 +189,7 @@ if args['webinterface']:
         global dosthread
         data = flask.request.data.decode()
         form = json.loads(data)
-        dosthread = threading.Thread(target=dos, args=(form['host'], int(form['port']), False, True, int(form['sockets']), int(form['sleeptime']),))
+        dosthread = threading.Thread(target=dos, args=(form['host'], int(form['port']), False, True, int(form['sockets']), int(form['sleeptime']), int(form['workers']),))
         dosthread.start()
         response = flask.Response('ok')
         response.headers.add('Access-Control-Allow-Origin', '*')
@@ -199,7 +199,6 @@ if args['webinterface']:
         global stop
         stop = True
         return flask.redirect('/')
-    # webbrowser.open('http://127.0.0.1:9670')
     if os.getenv('PREFIX', '').startswith('/data/data/com.termux'):
         os.system('am start -a android.intent.action.VIEW -d "http://localhost:9670"')
     else:
@@ -208,7 +207,6 @@ if args['webinterface']:
     app.run(host='127.0.0.1', port=9670, debug=False)
     sys.exit(0)
 
-# if None in [args['host'], args['port']]:
 if args['host'] == None:
     print(config.msg_help)
     sys.exit(1)
