@@ -1,7 +1,7 @@
 # HEAVY2LAY
 *Really HEAVY DOS for careful goals*
 
-V1.1.0 - developed by [vladosnx](https://github.com/vladosnx) on GitHub
+V1.2.1 - developed by [vladosnx](https://github.com/vladosnx) on GitHub
 
 ## DISCLAIMER
 This program wasn't developed to hack real sites. Use it only for pentesting. Only YOU're responsible for your actions.
